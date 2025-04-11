@@ -1,0 +1,65 @@
+name: Build And Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    name: Build project
+
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            suffix: linux.x86_64
+          - os: macos-13
+            suffix: macos.x86_64
+          - os: macos-14
+            suffix: macos.aarch64
+          - os: windows-2022
+            suffix: windows.x86_64.exe
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+      
+      - name: Install Wayland development headers
+        if: ${{ runner.os == 'Linux' }}
+        run: sudo apt-get install libwayland-dev libxkbcommon-dev xorg-dev
+
+      - name: Build project
+        uses: threeal/cmake-action@v2.1.0
+        with:
+          source-dir: .
+          build-dir: .build
+          generator: Ninja
+
+      - name: Upload binary to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: editor.${{ matrix.suffix }}
+      
+      # - name: Upload binary
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: editor.${{ matrix.suffix }}
+      #     path: bin/editor.${{ matrix.suffix }}
+
+  # release:
+  #   name: Publish release
+  #   needs: build
+  #   runs-on: ubuntu-24.04
+
+  #   steps:
+  #     - name: Download binary
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: editor.${{ matrix.suffix }}
+
+  #     - name: Upload binary to release
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         files: editor.${{ matrix.suffix }}
