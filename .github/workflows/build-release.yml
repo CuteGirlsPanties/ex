@@ -36,6 +36,9 @@ jobs:
           source-dir: .
           build-dir: .build
           generator: Ninja
+      
+      - name: Rename binary
+        run: mv bin/editor bin/editor.${{ matrix.suffix }}
 
       - name: Upload binary to release
         uses: softprops/action-gh-release@v2
