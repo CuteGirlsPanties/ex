@@ -1,57 +1,24 @@
-name: ci
+name: Build and release
 on:
-  pull_request:
   push:
-    branches:
-      - main
-      - master
-
 jobs:
-  Test:
-    runs-on: ${{ matrix.os }}
+  build-project:
     strategy:
-      fail-fast: false
       matrix:
-        os:
-          - windows-2022
-          - ubuntu-24.04
-          - macos-14 # arm64
-          - macos-13
-        compiler:
-          - llvm
-          - gcc
-          # you can specify the version after `-` like `llvm-18`.
-        include:
-          - os: "windows-2022"
-            compiler: "msvc"
+        os: [ubuntu-22.04, macos-13, macos-14, windows-2022]
+    name: Build Project
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./build/
-            ~/vcpkg
-            ~/.cache/vcpkg/archives
-            ${{ env.LOCALAPPDATA }}/vcpkg/archives
-            ${{ env.APPDATA }}/vcpkg/archives
-            ${{ env.XDG_CACHE_HOME }}/vcpkg/archives
-            ~/.cache/ccache
-            ~/.ccache
-            ~/.config/ccache
-            ~/Library/Caches/ccache
-            ${{ env.LOCALAPPDATA }}/ccache
-            ${{ env.XDG_CACHE_HOME }}/ccache
-          key: ${{ runner.os }}-${{ matrix.compiler }}-${{ env.BUILD_TYPE }}-${{ hashFiles('**/CMakeLists.txt', './vcpkg.json') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.BUILD_TYPE }}-
+      - name: Checkout Project
+        uses: actions/checkout@v4.2.2
 
-      - name: Setup Cpp
-        uses: aminya/setup-cpp@v1
+      # - name: Setup Ninja
+      #   uses: seanmiddleditch/gha-setup-ninja@v5
+
+      - name: Build Project
+        uses: threeal/cmake-action@v2.1.0
         with:
-          compiler: ${{ matrix.compiler }}
-          vcvarsall: true
-          cmake: true
-          ninja: true
-          vcpkg: true
-          cppcheck: true # instead of `true`, which chooses the default version, you can pass a specific version.
+          source-dir: source
+          build-dir: output
+          generator: Ninja
+          cxx-compiler: clang++
