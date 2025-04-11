@@ -15,7 +15,7 @@ jobs:
       - name: Wayland
         if: ${{ runner.os == 'Linux' }}
         run: |
-          sudo apt-get install libwayland-dev
+          sudo apt-get install libwayland-dev libxkbcommon-dev xorg-dev
 
       - name: Build Project
         uses: threeal/cmake-action@v2.1.0
