@@ -21,4 +21,5 @@ jobs:
           source-dir: .
           build-dir: .build
           generator: Ninja
+          c-compiler: clang
           cxx-compiler: clang++
