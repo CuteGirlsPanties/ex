@@ -1,5 +1,7 @@
 name: Build And Release
 
+# TODO Push tag v.*.*.*
+
 on:
   release:
     types: [created]
