@@ -28,7 +28,7 @@ int main() {
     // glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    window = glfwCreateWindow(800, 600, "Jrpg", nullptr, nullptr);
+    window = glfwCreateWindow(800, 600, "Editor", nullptr, nullptr);
     if (window == nullptr) {
         return 2;
     }
