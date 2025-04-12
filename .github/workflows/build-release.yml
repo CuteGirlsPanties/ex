@@ -3,8 +3,11 @@ name: Build And Release
 # TODO Push tag v.*.*.*
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+    - v*
+  # release:
+  #   types: [created]
 
 jobs:
   build:
